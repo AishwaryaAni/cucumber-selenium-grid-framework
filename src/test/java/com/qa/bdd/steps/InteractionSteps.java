@@ -90,7 +90,8 @@ public class InteractionSteps {
         tablesPage = new TablesPage(context.driver()).open();
     }
 
-    @When("I sort the table by {string} {int} time(s)")
+    // "\\(s\\)" = literal "(s)"; unescaped, Cucumber reads (s) as an optional letter
+    @When("I sort the table by {string} {int} time\\(s\\)")
     public void iSortTheTableBy(String column, int clicks) {
         for (int i = 0; i < clicks; i++) {
             tablesPage.clickHeader(column);
