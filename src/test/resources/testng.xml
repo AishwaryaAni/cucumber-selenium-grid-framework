@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- data-provider-thread-count = how many scenarios run at once (one browser each). -->
+<suite name="Cucumber BDD Suite" data-provider-thread-count="4">
+    <test name="Features">
+        <classes>
+            <class name="com.qa.bdd.runners.TestRunner"/>
+        </classes>
+    </test>
+</suite>
