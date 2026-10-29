@@ -72,6 +72,23 @@ jobs:
           -Dbrowser=${{ matrix.browser }}
           "-Dcucumber.filter.tags=${{ github.event.inputs.tags || '@regression' }}"
 
+      # Make each result unique per browser so the merged report keeps both copies
+      - name: Tag Allure results with the browser
+        if: always()
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: |
+          node -e '
+            const fs = require("fs"), dir = "target/allure-results", b = process.env.BROWSER;
+            if (!fs.existsSync(dir)) process.exit(0);
+            for (const f of fs.readdirSync(dir).filter(f => f.endsWith("-result.json"))) {
+              const r = JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8"));
+              r.parameters = (r.parameters || []).concat([{ name: "browser", value: b }]);
+              r.historyId = `${r.historyId || r.uuid}-${b}`;
+              r.labels = (r.labels || []).concat([{ name: "tag", value: b }]);
+              fs.writeFileSync(`${dir}/${f}`, JSON.stringify(r));
+            }'
+
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -119,6 +136,16 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "22"
+
+      - name: Describe the environment in the report
+        run: |
+          {
+            echo "Browsers=Chrome, Firefox"
+            echo "Execution=Selenium Grid 4 (Docker standalone nodes)"
+            echo "Parallel.sessions.per.browser=4"
+            echo "Application=https://the-internet.herokuapp.com"
+            echo "Commit=${GITHUB_SHA::7}"
+          } > allure-results/environment.properties
 
       - name: Generate combined Allure report
         run: npx --yes allure-commandline generate allure-results --clean -o allure-report
