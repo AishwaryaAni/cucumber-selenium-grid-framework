@@ -17,11 +17,12 @@ Feature: Advanced mouse and keyboard interactions
     When I press the <key> key
     Then the page should report "You entered: <key>"
 
+    # ENTER is deliberately not used: in this input it submits the form and reloads the page
     Examples:
-      | key    |
-      | ENTER  |
-      | ESCAPE |
-      | SPACE  |
+      | key        |
+      | BACK_SPACE |
+      | ESCAPE     |
+      | SPACE      |
 
   Scenario: Right-click opens a context menu alert
     Given I am on the context menu page
