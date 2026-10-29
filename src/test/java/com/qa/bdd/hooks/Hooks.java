@@ -1,12 +1,10 @@
 package com.qa.bdd.hooks;
 
-import com.qa.bdd.config.ConfigReader;
 import com.qa.bdd.context.TestContext;
 import com.qa.bdd.driver.DriverFactory;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import io.qameta.allure.Allure;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -22,9 +20,7 @@ public class Hooks {
     @Before(order = 0)
     public void startBrowser() {
         context.setDriver(DriverFactory.create());
-        // Same scenario on Chrome and Firefox shows as two distinct results in Allure
-        Allure.parameter("browser", ConfigReader.get("browser"));
-        Allure.parameter("execution", ConfigReader.get("execution"));
+        // Browser tagging for the merged Allure report happens in CI (see grid-tests.yml)
     }
 
     @After(order = 0)
